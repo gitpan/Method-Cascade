@@ -2,7 +2,7 @@ package Method::Cascade;
 
 use strict;
 
-our $VERSION = '0.100';
+our $VERSION = '0.101';
 
 require Exporter;
 use base 'Exporter';
@@ -49,9 +49,7 @@ Method::Cascade - Use method chaining with any API
     use Method::Cascade;
     use IO::Socket::INET;
 
-    my $sock = IO::Socket::INET->new('google.com:http(80)');
-
-    cascade($sock)
+    cascade(IO::Socket::INET->new('google.com:http'))
       ->timeout(5)
       ->setsockopt(SOL_SOCKET, SO_KEEPALIVE, pack("l", 1))
       ->print("GET / HTTP/1.0\r\n\r\n")
@@ -64,7 +62,7 @@ Method::Cascade - Use method chaining with any API
 
 Method chaining is a very intuitive and convenient way to make sequential method calls on the same object.
 
-Unfortunately, not all APIs support chaining. In order for an API to be chainable, every method must return C<$self>. However often there are good reasons for an API to not return C<$self>. Sometimes, for instance, it is useful for setter methods to return the previous values.
+Unfortunately, not all APIs support method chaining. In order for an API to be chainable, every method must return C<$self>. However often there are good reasons for an API to not return C<$self>. For instance, it can be useful for setter methods to return the previous values.
 
 Method cascading is a feature borrowed from Smalltalk. Its advantage is that any API can be used in a chained fashion, even if the designers didn't plan or intend for it to be chainable. You, the user of the API, can choose if you care about the return values and, if not, go ahead and cascade method calls.
 
@@ -73,7 +71,7 @@ Method cascading is a feature borrowed from Smalltalk. Its advantage is that any
 
 This module exports one function: C<cascade>. You should pass it the object that you would like to chain/cascade method calls on. It will return a wrapper object that forwards all method calls to the object you passed in. After forwarding, it returns the same wrapper object.
 
-Because return values are ignored (the methods are in fact called in void context), method cascading is most useful when used with APIs that throw exceptions instead of returning error values. For instance, with L<DBI>, as long as C<RaiseError> is set, you can safely do the following:
+Because return values are ignored (the methods are in fact called in void context), method cascading is most useful when used with APIs that throw exceptions instead of returning error values. For instance, with L<DBI>, as long as C<RaiseError> is true and C<AutoCommit> is false you can safely do the following:
 
     cascade($dbh)->do("INSERT INTO admins (name) VALUES (?)", undef, $user)
                  ->do("DELETE FROM users WHERE name=?", undef, $user)
@@ -101,12 +99,16 @@ L<The Method::Cascade github repo|https://github.com/hoytech/Method-Cascade>
 
 L<Method Cascades in Dart|http://news.dartlang.org/2012/02/method-cascades-in-dart-posted-by-gilad.html>
 
-L<Wikipedia entry|https://en.wikipedia.org/wiki/Method_cascading>
+L<Wikipedia entry on Method Cascading|https://en.wikipedia.org/wiki/Method_cascading>
+
+L<IO::All> - I/O library that makes heavy use of chaining
 
 
 =head1 AUTHOR
 
 Doug Hoyte, C<< <doug@hcsw.org> >>
+
+Thanks to Richard Farr for helping me come up with this idea (during a conversation about C++ smart pointers).
 
 
 =head1 COPYRIGHT & LICENSE

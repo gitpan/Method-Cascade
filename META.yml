@@ -17,9 +17,8 @@ no_index:
   directory:
     - t
     - inc
-requires:
-  common::sense: 0
+requires: {}
 resources:
   bugtracker: https://github.com/hoytech/Method-Cascade/issues
   repository: git://github.com/hoytech/Method-Cascade.git
-version: 0.100
+version: 0.101

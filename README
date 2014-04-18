@@ -5,9 +5,7 @@ SYNOPSIS
         use Method::Cascade;
         use IO::Socket::INET;
 
-        my $sock = IO::Socket::INET->new('google.com:http(80)');
-
-        cascade($sock)
+        cascade(IO::Socket::INET->new('google.com:http'))
           ->timeout(5)
           ->setsockopt(SOL_SOCKET, SO_KEEPALIVE, pack("l", 1))
           ->print("GET / HTTP/1.0\r\n\r\n")
@@ -19,9 +17,9 @@ BACKGROUND
     Method chaining is a very intuitive and convenient way to make
     sequential method calls on the same object.
 
-    Unfortunately, not all APIs support chaining. In order for an API to be
-    chainable, every method must return $self. However often there are good
-    reasons for an API to not return $self. Sometimes, for instance, it is
+    Unfortunately, not all APIs support method chaining. In order for an API
+    to be chainable, every method must return $self. However often there are
+    good reasons for an API to not return $self. For instance, it can be
     useful for setter methods to return the previous values.
 
     Method cascading is a feature borrowed from Smalltalk. Its advantage is
@@ -39,7 +37,8 @@ DESCRIPTION
     Because return values are ignored (the methods are in fact called in
     void context), method cascading is most useful when used with APIs that
     throw exceptions instead of returning error values. For instance, with
-    DBI, as long as "RaiseError" is set, you can safely do the following:
+    DBI, as long as "RaiseError" is true and "AutoCommit" is false you can
+    safely do the following:
 
         cascade($dbh)->do("INSERT INTO admins (name) VALUES (?)", undef, $user)
                      ->do("DELETE FROM users WHERE name=?", undef, $user)
@@ -67,10 +66,16 @@ SEE ALSO
     <http://news.dartlang.org/2012/02/method-cascades-in-dart-posted-by-gila
     d.html>
 
-    Wikipedia entry <https://en.wikipedia.org/wiki/Method_cascading>
+    Wikipedia entry on Method Cascading
+    <https://en.wikipedia.org/wiki/Method_cascading>
+
+    IO::All - I/O library that makes heavy use of chaining
 
 AUTHOR
     Doug Hoyte, "<doug@hcsw.org>"
+
+    Thanks to Richard Farr for helping me come up with this idea (during a
+    conversation about C++ smart pointers).
 
 COPYRIGHT & LICENSE
     Copyright 2014 Doug Hoyte.

@@ -31,9 +31,7 @@
          }
       },
       "runtime" : {
-         "requires" : {
-            "common::sense" : "0"
-         }
+         "requires" : {}
       }
    },
    "release_status" : "stable",
@@ -45,5 +43,5 @@
          "url" : "git://github.com/hoytech/Method-Cascade.git"
       }
    },
-   "version" : "0.100"
+   "version" : "0.101"
 }
